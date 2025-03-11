@@ -1,0 +1,21 @@
+agent_type : "basic"
+# "basic"
+task_description: "test config."
+model_config:
+        model_name : "qwen2:7b"
+        # model name, e.g. "qwen2:7b". Use ollama list to see the full name of the models.
+        model_prompt : "I am a postdoc and focusing on the combination of machine learning and single cell data analysis. And I only need papers that published after 2024-1-1."
+        # 
+
+search_config:
+        author_list_file : "author_list.txt"
+        # Author ID
+        publisher_file : 
+        # ISSN
+        keywords_file : 
+        # search in title, abstract and keywords
+        year : 2015
+        # > year
+        max_count : 20
+
+

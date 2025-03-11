@@ -1,0 +1,16 @@
+system_config:
+    repeat_time: 0 # unit: hour
+
+email_config:
+    smtp_server:
+    smtp_port: 
+    sender: 
+    password:
+    receiver: 
+
+telegram_config:
+    bot_token : ""
+    chat_id : ""
+
+elsevier_config:
+    API_key: ""
