@@ -9,7 +9,7 @@ model_config:
 
 search_config:
         author_list_file : "author_list.txt"
-        # Author ID
+        # Author ID, if no specific authors, just leave it empty.
         publisher_file : 
         # ISSN
         keywords_file : 
