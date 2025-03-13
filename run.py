@@ -13,8 +13,8 @@ config_file_path = "./config.yaml"
 with open(config_file_path, "r", encoding="utf-8") as file:
     config_ = yaml.safe_load(file)
 
-repeat_time = config_["system_config"]["repeat_time"]
-if repeat_time == 0:
+time_interval = config_["system_config"]["time_interval"]
+if time_interval == 0:
     repeat = False
 else:
     repeat = True
@@ -52,11 +52,10 @@ for file_ in task_folder_filenames:
     with open(f"{task_folder}/{file_}", "r", encoding="utf-8") as file:
         task_config.append(yaml.safe_load(file))
 print(f"{len(task_config)} task config(s) loaded.")
-#print(f"Running searching task every {repeat_time} hours.")
 last_start_time = datetime.datetime.now()
 
 while True:
-    next_scheduled_time = last_start_time + datetime.timedelta(hours=repeat_time)
+    next_scheduled_time = last_start_time + datetime.timedelta(hours=time_interval)
     now = datetime.datetime.now()
     #print(f"Time: {now.strftime('%Y-%m-%d %H:%M:%S')}")
     res = []

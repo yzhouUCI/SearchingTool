@@ -1,12 +1,5 @@
 system_config:
-    repeat_time: 0 # unit: hour
-
-email_config:
-    smtp_server:
-    smtp_port: 
-    sender: 
-    password:
-    receiver: 
+    time_interval: 0 # unit: hour
 
 telegram_config:
     bot_token : ""
@@ -14,3 +7,10 @@ telegram_config:
 
 elsevier_config:
     API_key: ""
+
+email_config:
+    smtp_server:
+    smtp_port: 
+    sender: 
+    password:
+    receiver: 
