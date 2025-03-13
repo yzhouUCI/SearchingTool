@@ -1,0 +1,11 @@
+system_config:
+    time_interval: 0 # unit: hour
+
+telegram_config:
+    bot_token : ""
+    chat_id : ""
+    graph_token : ""
+    graph_name : ""
+
+elsevier_config:
+    API_key: ""

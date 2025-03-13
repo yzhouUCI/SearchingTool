@@ -16,6 +16,6 @@ search_config:
         # search in title, abstract and keywords
         year : 2015
         # > year
-        max_count : 20
+        max_count : 5
 
 

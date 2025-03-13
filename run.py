@@ -1,10 +1,10 @@
-#%%
 import os
 import yaml
 import time, datetime
 from src.science_agent.sciagent import run_task
 from src.science_agent.email import emailbox
 from src.science_agent.teleg import telebot
+from src.science_agent.teleg import telegraphmaker, createTelegraphAccount
 def get_all_filenames(folder_path):
     filenames = [f for f in os.listdir(folder_path) if os.path.isfile(os.path.join(folder_path, f))]
     return filenames
@@ -19,29 +19,25 @@ if time_interval == 0:
 else:
     repeat = True
 
-# email config
-email_smtp_server = config_['email_config']["smtp_server"]
-email_smtp_port = config_['email_config']["smtp_port"]
-email_sender = config_['email_config']["sender"]
-email_password = config_['email_config']["password"]
-email_receiver = config_['email_config']["receiver"]
-if not (email_smtp_server or email_smtp_port or email_sender or email_sender or email_password or email_receiver):
-    print("Email deactivated.")
-    emailbox_ = None
-else:
-    print("Email activated.")
-    emailbox_ = emailbox(email_smtp_server,email_smtp_port,email_sender,email_password)
-
-# telegram config
+# Telegram config
 telegram_bot_token = config_["telegram_config"]["bot_token"]
 telegram_bot_chatid = config_["telegram_config"]["chat_id"]
 if not (telegram_bot_token or telegram_bot_chatid):
     print("Telegram deactivated.")
     telegram_ = None
+    telegraph = None
 else:
     print("Telegram activated.")
     telegram_ = telebot(telegram_bot_token, telegram_bot_chatid)
-    
+    telegram_graph_token = config_["telegram_config"]["graph_token"]
+    telegram_graph_name = config_["telegram_config"]["graph_name"]
+    if not telegram_graph_token:
+        telegram_graph_token = createTelegraphAccount("Intelligence")
+        telegram_graph_name = "Intelligence"
+        print(f"Please add this token in your config file. Token:{telegram_graph_token}, name:{telegram_graph_name}")
+    telegraph = telegraphmaker(telegram_graph_token, telegram_graph_name)
+
+# Elsevier config
 api_key = config_["elsevier_config"]["API_key"]
 task_folder = "./task"
 task_config = []
@@ -57,34 +53,20 @@ last_start_time = datetime.datetime.now()
 while True:
     next_scheduled_time = last_start_time + datetime.timedelta(hours=time_interval)
     now = datetime.datetime.now()
-    #print(f"Time: {now.strftime('%Y-%m-%d %H:%M:%S')}")
     res = []
+    print(f"Tasks started.")
     for idx, task in enumerate(task_config, start = 1):
-        print(f"Task: {idx}")
         task.update({"elsevier_api":api_key})
         task.update({"pwd":os.path.dirname(os.path.abspath(__file__))})
         res.append(run_task(task))
-    # send email
-    body_content = []
-    for idx, result in enumerate(res,start=1):
-        body_content.append(f"Task {idx}")
-        body_content.append(f"Task description: {task_config[idx-1]["task_description"]}")
-        for idx_res, search_content in enumerate(result,start=1):
-            body_content.append(f"{idx_res}. ")
-            body_content.append(f"Agent summary: {search_content["agent summary"]}")
-            body_content.append(search_content["paper info"])
-    body = "\n".join(body_content)
-    if emailbox_:
-        emailbox_.send_email("Searching results from science agent",body,email_receiver)
     if telegram_:
-        telegram_.send_message(body)
-    print(body)
-    print("Tasks completed.")
-    print(f"Next Searching Time: {next_scheduled_time.strftime('%Y-%m-%d %H:%M:%S')}")
+        telegram_.sendgraph(telegraph, task_config,res)
+    print(f"Tasks finished, next time: {next_scheduled_time.strftime('%Y-%m-%d %H:%M:%S')}")
+    if not repeat:
+        break
     if now < next_scheduled_time:
         wait_seconds = (next_scheduled_time - now).total_seconds()
         time.sleep(wait_seconds)
     last_start_time = datetime.datetime.now()
     if not repeat:
         break
-# %%

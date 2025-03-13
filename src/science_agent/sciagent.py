@@ -9,7 +9,6 @@ def run_task(task_config):
         # test api
         if not elsevier.test_API(task_config["elsevier_api"]):
             ValueError("Cannot connect to Elsevier. Please check your api key and network connection.")
-        print("Loading LLM.")
         # model set
         agent_model = agent.SearchingAgent(task_config["model_config"]["model_name"])
         prompt = task_config["model_config"]["model_prompt"]
@@ -20,7 +19,6 @@ def run_task(task_config):
                 }
         )
         pattern = r"^summary:\s*(.+?)\s*;\s*required:\s*(Y|N)$"
-        print("Preparing searching...")
         search_engine = elsevier.Elsevier(api_key=task_config["elsevier_api"])
         # load searching config
         pwd = task_config["pwd"]
@@ -63,24 +61,22 @@ def run_task(task_config):
                                         )
         results = search_engine.get_all_search_results(query=query,max_count=max_count)
         formatted_res = agent.structured_search_results(results)
-        formatted_res_noabstract = agent.structured_search_results_noabstract(results)
-        print("Searching complete.")
         filtered_papers = []
         for idx, res in enumerate(formatted_res,start=1):
             i = 1
             while True:
                 response = agent_model.chat(res)
-                #print(response)
-                # check response
                 match = re.match(pattern, response)
                 if match:
                     summary = match.group(1)
                     required = match.group(2)
                     if required == 'Y':
-                        filtered_papers.append({"agent summary":summary,"paper info": formatted_res_noabstract[idx-1]})
+                        filtered_papers.append({"summary":summary,"paper_info": results[idx-1]})
                     break
                 if i > 3:
                     break
                 i = i + 1
+            if len(filtered_papers) >= max_count:
+                break
         return filtered_papers
             

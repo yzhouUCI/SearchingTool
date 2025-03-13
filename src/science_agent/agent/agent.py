@@ -51,7 +51,7 @@ def structured_search_results(entries):
         publisher = entry.get("prism:publicationName", "Unknown pubulisher")
         pubdate = entry.get("prism:coverDate", "Unknown date")
         doi = entry.get("prism:doi", "No doi")
-        entry_text = f"Paper {idx}:\nTitle: {title}\nAbstract: {abstract}\nPublisher: {publisher}\nPubilished date: {pubdate}\nDoi: {doi}"
+        entry_text = f"Paper {idx}:\nTitle: {title}\nAbstract: {abstract}\nPublisher: {publisher}\nPubilished date: {pubdate}\ndoi: {doi}"
         formatted_entries.append(entry_text)
     return formatted_entries
 
@@ -62,6 +62,6 @@ def structured_search_results_noabstract(entries):
         publisher = entry.get("prism:publicationName", "Unknown pubulisher")
         pubdate = entry.get("prism:coverDate", "Unknown date")
         doi = entry.get("prism:doi", "No doi")
-        entry_text = f"Title: {title}\nPublisher: {publisher}\nPubilished date: {pubdate}\nDoi: {doi}"
+        entry_text = f"Title: {title}\nPublisher: {publisher}\nPubilished date: {pubdate}\ndoi: {doi}"
         formatted_entries.append(entry_text)
     return formatted_entries
