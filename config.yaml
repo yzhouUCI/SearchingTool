@@ -4,13 +4,8 @@ system_config:
 telegram_config:
     bot_token : ""
     chat_id : ""
+    graph_token : ""
+    graph_name : ""
 
 elsevier_config:
     API_key: ""
-
-email_config:
-    smtp_server:
-    smtp_port: 
-    sender: 
-    password:
-    receiver: 
