@@ -11,11 +11,7 @@
     ```shell
     brew install uv
     ```
-    Next, install the required Python packages.  
-    ```shell
-    uv add pyyaml requests ollama tqdm # basic requirement
-    uv add python-telegram-bot telegraph # Telegram support
-    ```
+    When you first run the script, ```uv``` will automatically install the dependencies.
 
 2. Get your Elsevier API  
     https://dev.elsevier.com/apikey/manage  
@@ -48,7 +44,7 @@
 ## Next
 1. Local database
 2. More flexible searching options
-3. RSS support
+3. ~~RSS support~~
 4. ~~Richer formatted contents and Telegra.ph~~
 
 ## Links
