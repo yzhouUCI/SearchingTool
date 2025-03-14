@@ -1,11 +1,13 @@
 from .agent import agent
 from .elsevier import elsevier
+from .rss import rss
 import os
 import datetime
 import re
 from tqdm import tqdm
 
 def run_task(task_config):
+    pattern = r"^summary:\s*(.+?)\s*;\s*required:\s*(Y|N)$"
     if task_config["agent_type"] == "basic":
         # test api
         if not elsevier.test_API(task_config["elsevier_api"]):
@@ -19,7 +21,6 @@ def run_task(task_config):
                     'content': f"Current date is {datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')}. You are my academic research assistant. My requirement is: [{prompt}]. I will provide you with the title and abstract of an academic paper. Your task is to review the paper and determine if it meets my requirements. It is crucial that your response is in the exact format shown below, with the two parts separated by a semicolon (;): 'summary: [your concise summary of the paper]; required: [Y if it meets the requirements, N if it does not]'. Make sure to follow this format exactly and do not include any additional commentary.",
                 }
         )
-        pattern = r"^summary:\s*(.+?)\s*;\s*required:\s*(Y|N)$"
         search_engine = elsevier.Elsevier(api_key=task_config["elsevier_api"])
         # load searching config
         pwd = task_config["pwd"]
@@ -87,4 +88,38 @@ def run_task(task_config):
                 break
         print(f"Filtered {len(filtered_papers)} articles.")
         return filtered_papers
-            
+    if task_config["agent_type"] == "rss":
+        results = rss.rss_get_entry(task_config["rss_url"])
+        agent_model = agent.SearchingAgent(task_config["model_config"]["model_name"])
+        prompt = task_config["model_config"]["model_prompt"]
+        agent_model.messages.append(
+                    {
+                    'role' : 'user',
+                    'content': f"Current date is {datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')}. You are my academic research assistant. My requirement is: [{prompt}]. I will provide you with the title and abstract of an academic paper. Your task is to review the paper and determine if it meets my requirements. It is crucial that your response is in the exact format shown below, with the two parts separated by a semicolon (;): 'summary: [your concise summary of the paper]; required: [Y if it meets the requirements, N if it does not]'. Make sure to follow this format exactly and do not include any additional commentary.",
+                }
+        )
+        if not task_config["model_config"]["output_count"]:
+            max_output_count = 10
+        else:
+            max_output_count = task_config["model_config"]["output_count"]
+        print(f"Found {len(results)} contents.")
+        formatted_res = agent.structured_search_results(results)
+        filtered_papers = []
+        for idx, res in enumerate(tqdm(formatted_res, desc="Processing"),start=1):
+            i = 1
+            while True:
+                response = agent_model.chat(res)
+                match = re.match(pattern, response)
+                if match:
+                    summary = match.group(1)
+                    required = match.group(2)
+                    if required == 'Y':
+                        filtered_papers.append({"summary":summary,"paper_info": results[idx-1]})
+                    break
+                if i > 3:
+                    break
+                i = i + 1
+            if len(filtered_papers) >= max_output_count:
+                break
+        print(f"Filtered {len(filtered_papers)} content.")
+        return filtered_papers

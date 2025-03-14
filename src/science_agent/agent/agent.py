@@ -46,22 +46,11 @@ class SearchingAgent(BasicAgent):
 def structured_search_results(entries):
     formatted_entries = []
     for idx, entry in enumerate(entries, start=1):
-        title = entry.get("dc:title", "No title")
-        abstract = entry.get("dc:description", "No description")
-        publisher = entry.get("prism:publicationName", "Unknown pubulisher")
-        pubdate = entry.get("prism:coverDate", "Unknown date")
-        doi = entry.get("prism:doi", "No doi")
+        title = entry.get("title", "No title")
+        abstract = entry.get("abstract", "No abstract")
+        publisher = entry.get("publiher", "Unknown pubulisher")
+        pubdate = entry.get("date", "Unknown date")
+        doi = entry.get("doi", "No doi")
         entry_text = f"Paper {idx}:\nTitle: {title}\nAbstract: {abstract}\nPublisher: {publisher}\nPubilished date: {pubdate}\ndoi: {doi}"
-        formatted_entries.append(entry_text)
-    return formatted_entries
-
-def structured_search_results_noabstract(entries):
-    formatted_entries = []
-    for idx, entry in enumerate(entries, start=1):
-        title = entry.get("dc:title", "No title")
-        publisher = entry.get("prism:publicationName", "Unknown pubulisher")
-        pubdate = entry.get("prism:coverDate", "Unknown date")
-        doi = entry.get("prism:doi", "No doi")
-        entry_text = f"Title: {title}\nPublisher: {publisher}\nPubilished date: {pubdate}\ndoi: {doi}"
         formatted_entries.append(entry_text)
     return formatted_entries

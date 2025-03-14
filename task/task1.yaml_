@@ -12,9 +12,9 @@ search_config:
         # Author ID, if no specific authors, just leave it empty.
         publisher_file :
         # ISSN
-        keywords_file : "keywords.txt"
+        keywords_file :
         # search in title, abstract and keywords
-        year : 2024
+        year : 2020
         # > year
         max_count : 200
 

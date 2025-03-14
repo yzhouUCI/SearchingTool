@@ -41,6 +41,7 @@ class Elsevier:
                 "httpAccept": "application/json",
                 "cursor": cursor,
                 "view": "COMPLETE",
+                "sort" : "coverDate"
             }
             response = requests.get(url, params=params)
             if response.status_code != 200:
@@ -56,33 +57,21 @@ class Elsevier:
                 break
             next_cursor = data.get("search-results", {}).get("cursor", {}).get("@next")
             cursor = next_cursor
-        return all_entries
+        elsevier2agent_entry = []
+        for i in range(len(all_entries)):
+            if i >= max_count:
+                break
+            elsevier2agent_entry.append(
+                {
+                    "title" : all_entries[i].get("dc:title", "no title"),
+                    "date" : all_entries[i].get("prism:coverDate", "no date"),
+                    "doi" : all_entries[i].get("prism:doi", "no doi"),
+                    "abstract" : all_entries[i].get("dc:description", "no abstract"),
+                    "publisher" : all_entries[i].get("prism:publicationName", "no publisher")
+                }
+            )
+        return elsevier2agent_entry
     
-def output_scopus_results_json(json_data):
-    if not json_data:
-        print("Invalid data.")
-        return
-    entries = json_data.get("search-results", {}).get("entry", [])
-    if not entries:
-        print("怎么一篇文章也没有啊！")
-        return
-    for i, entry in enumerate(entries, start=1):
-        title = entry.get("dc:title", "No title.")
-        abstract = entry.get("dc:description", "No abstract.")
-        print(f"{i}. {title}\n{abstract}\n")
-def output_scopus_results(data):
-    if not data:
-        print("Invalid data.")
-        return
-    entries = data
-    if not entries:
-        print("怎么一篇文章也没有啊！")
-        return
-    for i, entry in enumerate(entries, start=1):
-        title = entry.get("dc:title", "No title.")
-        abstract = entry.get("dc:description", "No abstract.")
-        print(f"{i}. {title}\n{abstract}\n")
-#%%
 def generate_query(keywords, author_id = None, affiliation_id = None, affiliation = None, author_name = None, doctype = None, isbn = None, issn = None, minyear=None):
     query = []
     if not (keywords or author_id or affiliation_id or affiliation or author_name or doctype or isbn or issn or minyear):

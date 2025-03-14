@@ -74,10 +74,11 @@ class telegraphmaker():
             for idx_res, res in enumerate(results, start=1):
                 ai_summary = res.get("summary", "")
                 entry = res.get("paper_info", "")
-                html += f'<h3 style="color:red">{entry.get("dc:title", "No title")}</h3>\n'
-                html += f"<p><strong>Publisher:</strong> {entry.get("prism:publicationName", "Unknown pubulisher")}</p>\n"
-                html += f"<p><strong>Published date:</strong> {entry.get("prism:coverDate", "Unknown date")}</p>\n"
-                doi = entry.get("prism:doi", "No doi")
+                html += f'<h3 style="color:red">{entry.get("title", "No title")}</h3>\n'
+                html += f"<p><strong>Publisher:</strong> {entry.get("publisher", "Unknown pubulisher")}</p>\n"
+                pubdate = entry.get("date", "None")
+                html += f"<p><strong>Published date:</strong> {pubdate}</p>\n"
+                doi = entry.get("doi", "No doi")
                 html += f"<p><strong>doi</strong>: <a href='http://dx.doi.org/{doi}' target='_blank'>{doi}</a></p>\n"
                 html += f"<p><strong>Summary:</strong> {ai_summary}</p>\n"
                 html += "<hr>\n"

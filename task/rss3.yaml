@@ -1,0 +1,8 @@
+agent_type : "rss"
+task_description: "Nature Communications"
+model_config :
+        model_name : "qwen2:7b"
+        model_prompt : "I focus on machine learning, single cell data analysis and spatial transcriptomics data analysis"
+        output_count : 30
+
+rss_url : "https://www.nature.com/ncomms.rss"
