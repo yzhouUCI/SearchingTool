@@ -6,16 +6,16 @@ model_config:
         # model name, e.g. "qwen2:7b". Use ollama list to see the full name of the models.
         model_prompt : "I am a postdoc and focusing on the combination of machine learning and single cell data analysis. And I only need papers that published after 2024-1-1."
         # 
-
+        output_count : 30
 search_config:
         author_list_file : "author_list.txt"
         # Author ID, if no specific authors, just leave it empty.
-        publisher_file : 
+        publisher_file :
         # ISSN
-        keywords_file : 
+        keywords_file : "keywords.txt"
         # search in title, abstract and keywords
-        year : 2015
+        year : 2024
         # > year
-        max_count : 5
+        max_count : 200
 
 

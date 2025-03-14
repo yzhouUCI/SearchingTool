@@ -13,7 +13,7 @@
     ```
     Next, install the required Python packages.  
     ```shell
-    uv add pyyaml requests ollama # basic requirement
+    uv add pyyaml requests ollama tqdm # basic requirement
     uv add python-telegram-bot telegraph # Telegram support
     ```
 
@@ -49,7 +49,7 @@
 1. Local database
 2. More flexible searching options
 3. RSS support
-4. Richer formatted contents and Telegra.ph
+4. ~~Richer formatted contents and Telegra.ph~~
 
 ## Links
 1. https://dev.elsevier.com/apikey/manage

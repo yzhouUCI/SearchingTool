@@ -1,3 +1,4 @@
+#%%
 import os
 import yaml
 import time, datetime
@@ -49,7 +50,7 @@ for file_ in task_folder_filenames:
         task_config.append(yaml.safe_load(file))
 print(f"{len(task_config)} task config(s) loaded.")
 last_start_time = datetime.datetime.now()
-
+#%%
 while True:
     next_scheduled_time = last_start_time + datetime.timedelta(hours=time_interval)
     now = datetime.datetime.now()

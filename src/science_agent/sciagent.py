@@ -3,6 +3,7 @@ from .elsevier import elsevier
 import os
 import datetime
 import re
+from tqdm import tqdm
 
 def run_task(task_config):
     if task_config["agent_type"] == "basic":
@@ -53,16 +54,22 @@ def run_task(task_config):
             max_count = 100
         else:
             max_count = task_config["search_config"]["max_count"]
+        # max_output
+        if not task_config["model_config"]["output_count"]:
+            max_output_count = 10
+        else:
+            max_output_count = task_config["model_config"]["output_count"]
         # searching 
         query = elsevier.generate_query(keywords=keywords,
                                         author_id=authors,
-                                        isbn=publishers,
+                                        issn=publishers,
                                         minyear=year
                                         )
         results = search_engine.get_all_search_results(query=query,max_count=max_count)
+        print(f"Found {len(results)} articles.")
         formatted_res = agent.structured_search_results(results)
         filtered_papers = []
-        for idx, res in enumerate(formatted_res,start=1):
+        for idx, res in enumerate(tqdm(formatted_res, desc="Processing"),start=1):
             i = 1
             while True:
                 response = agent_model.chat(res)
@@ -76,7 +83,8 @@ def run_task(task_config):
                 if i > 3:
                     break
                 i = i + 1
-            if len(filtered_papers) >= max_count:
+            if len(filtered_papers) >= max_output_count:
                 break
+        print(f"Filtered {len(filtered_papers)} articles.")
         return filtered_papers
             
